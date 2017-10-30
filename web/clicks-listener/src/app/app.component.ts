@@ -1,23 +1,27 @@
 import { Component } from '@angular/core';
-
-function getClicks() {
-  fetch('https://request-counter.appspot.com/api/getclicks')
-    .then((response) => response.json())
-    .then((responseJson) => {
-      return responseJson;
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-  return -1;
-}
+import { Http, Response, Headers } from '@angular/http';
+import 'rxjs/add/operator/map';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AppComponent {
-  title = 'Demo';
-  clicks = getClicks();
-}
+  data: any = null;
+
+  constructor(private _http: Http) {
+    this.getClicks();
+  }
+
+  private getClicks() {
+    return this._http.get('https://request-counter.appspot.com/api/getclicks')
+      .map((res: Response) => res.json())
+      .subscribe(data => {
+        this.data = data;
+        console.log(this.data);
+        console.log(this.data.amount);
+      });
+  }}
+
